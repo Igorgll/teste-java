@@ -1,6 +1,8 @@
 package com.igorgll.h2.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,10 +11,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.igorgll.h2.exception.ResourceNotFoundException;
 import com.igorgll.h2.model.Clientes;
 import com.igorgll.h2.repository.ClientesRepository;
 
@@ -20,7 +24,7 @@ import com.igorgll.h2.repository.ClientesRepository;
 @RequestMapping("api/v1/clientes")
 public class ClientesController {
 
-    public @Autowired ClientesRepository clientesRepository;
+    private @Autowired ClientesRepository clientesRepository;
 
     @GetMapping
     public ResponseEntity<List<Clientes>> getClientes() {
@@ -34,9 +38,10 @@ public class ClientesController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Clientes> getById(@PathVariable Long id) {
-        return clientesRepository.findById(id)
-                .map(resp -> ResponseEntity.ok(resp))
-                .orElse(ResponseEntity.notFound().build());
+        Clientes clientes = clientesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente com o id: " + id + " não encontrado."));
+
+        return ResponseEntity.ok().body(clientes);
     }
 
     @PostMapping
@@ -44,9 +49,34 @@ public class ClientesController {
         return ResponseEntity.status(HttpStatus.CREATED).body(clientesRepository.save(clientes));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Clientes> updateCliente(@PathVariable long id, @RequestBody Clientes clientes) {
+        Clientes updateCliente = clientesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente com o id: " + id + " não existe."));
+
+        updateCliente.setNome(clientes.getNome());
+        updateCliente.setDataNascimento(clientes.getDataNascimento());
+        updateCliente.setEndereco(clientes.getEndereco());
+        updateCliente.setLogradouro(clientes.getLogradouro());
+        updateCliente.setCep(clientes.getCep());
+        updateCliente.setNumero(clientes.getNumero());
+        updateCliente.setCidade(clientes.getCidade());
+
+        clientesRepository.save(updateCliente);
+
+        return ResponseEntity.ok(updateCliente);
+    }
+
     @DeleteMapping("/{id}")
-    public String deleteCliente(@PathVariable Long id) {
-        clientesRepository.deleteById(id);
-        return "Cliente deletado com sucesso!";
+    public Map<String, Boolean> deleteCliente(@PathVariable long id)
+            throws ResourceNotFoundException {
+        Clientes clientes = clientesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente com o id: " + id + " não existe."));
+
+        clientesRepository.delete(clientes);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("Cliente excluido com sucesso!", Boolean.TRUE);
+
+        return response;
     }
 }
