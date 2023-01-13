@@ -13,18 +13,16 @@ import com.igorgll.h2.repository.ClientesRepository;
 @Service
 public class ClientesService {
 
-    private @Autowired ClientesRepository clientesReposirtory;
+    private @Autowired ClientesRepository clientesRepository;
 
     public Optional<Clientes> createClientes(Clientes clientes) {
 
-        Optional<Clientes> newCliente = clientesReposirtory.findByNomeContainingIgnoreCase(clientes.getNome()); // Executes a query to verify if cliente already exists
+        Optional<Clientes> newCliente = clientesRepository.findByNomeContainingIgnoreCase(clientes.getNome());
 
         if (newCliente.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cliente já existe na base de dados.", null);
-        } else {
-            return Optional.ofNullable(clientesReposirtory.save(clientes));
         }
-
+        return Optional.ofNullable(clientesRepository.save(clientes));
     }
 
 }

@@ -56,17 +56,12 @@ public class ClientesController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Clientes> updateCliente(@PathVariable long id, @Valid @RequestBody Clientes clientes) {
+    public ResponseEntity<Clientes> updateCliente(@PathVariable Long id, @Valid @RequestBody Clientes clientes) {
         Clientes updateCliente = clientesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente com o id: " + id + " não existe."));
 
         updateCliente.setNome(clientes.getNome());
         updateCliente.setDataNascimento(clientes.getDataNascimento());
-
-        // if (updateCliente.getNome().isEmpty() ||
-        // updateCliente.getDataNascimento().isEmpty()) {
-        // return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        // }
 
         clientesRepository.save(updateCliente);
 

@@ -33,7 +33,7 @@ public class Clientes {
     private String dataNascimento;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_endereco")
+    @JoinColumn(name = "id_cliente")
     @JsonIgnoreProperties({ "clientes" })
     private List<Enderecos> enderecos;
 

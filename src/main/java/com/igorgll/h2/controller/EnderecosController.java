@@ -1,7 +1,6 @@
 package com.igorgll.h2.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +29,6 @@ public class EnderecosController {
 
     private @Autowired EnderecosRepository enderecosRepository;
 
-    @GetMapping
-    public ResponseEntity<List<Enderecos>> getEndrecos() {
-        List<Enderecos> list = enderecosRepository.findAll();
-        if (list.isEmpty()) {
-            return ResponseEntity.status(204).build();
-        }
-
-        return ResponseEntity.status(200).body(list);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Enderecos> getById(@PathVariable Long id) {
         Enderecos enderecos = enderecosRepository.findById(id)
@@ -53,9 +42,21 @@ public class EnderecosController {
         return ResponseEntity.status(HttpStatus.CREATED).body(enderecosRepository.save(enderecos));
     }
 
-    @PutMapping()
-    public ResponseEntity<Enderecos> updateEndereco(@Valid @RequestBody Enderecos enderecos) {
-        return ResponseEntity.status(HttpStatus.OK).body(enderecosRepository.save(enderecos));
+    @PutMapping("/{id}")
+    public ResponseEntity<Enderecos> updateEndereco(@PathVariable Long id, @Valid @RequestBody Enderecos enderecos) {
+        Enderecos updateEndereco = enderecosRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Endereco com o id: " + id + " não existe."));
+
+        updateEndereco.setEndereco(enderecos.getEndereco());
+        updateEndereco.setLogradouro(enderecos.getLogradouro());
+        updateEndereco.setCep(enderecos.getCep());
+        updateEndereco.setNumero(enderecos.getNumero());
+        updateEndereco.setCidade(enderecos.getCidade());
+        updateEndereco.setEnderecoPrincipal(enderecos.getEnderecoPrincipal());
+
+        enderecosRepository.save(updateEndereco);
+
+        return ResponseEntity.ok(updateEndereco);
     }
 
     @DeleteMapping("/{id}")

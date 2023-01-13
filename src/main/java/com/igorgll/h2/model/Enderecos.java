@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "tb_enderecos")
@@ -41,9 +42,14 @@ public class Enderecos {
     @Column(name = "Cidade")
     private String cidade;
 
+    @NotEmpty(message = "Endereço principal é obrigatório")
+    @Size(min = 3, max = 3)
+    @Column(name = "Endereço_principal")
+    private String enderecoPrincipal;
+
     @ManyToOne
-    @JoinColumn(name = "id_endereco")
-    @JsonIgnoreProperties("enderecos")
+    @JoinColumn(name = "id_cliente")
+    @JsonIgnoreProperties({ "clientes" })
     private Clientes clientes;
 
     public Enderecos() {
@@ -53,13 +59,15 @@ public class Enderecos {
             @NotEmpty(message = "Logradouro é obrigatório") String logradouro,
             @NotEmpty(message = "CEP é obrigatório") String cep,
             @NotEmpty(message = "Número é obrigatório") String numero,
-            @NotEmpty(message = "Cidade é obrigatório") String cidade, Clientes clientes) {
+            @NotEmpty(message = "Cidade é obrigatório") String cidade,
+            @NotEmpty(message = "Endereço principal é obrigatório") String enderecoPrincipal, Clientes clientes) {
         this.id = id;
         this.endereco = endereco;
         this.logradouro = logradouro;
         this.cep = cep;
         this.numero = numero;
         this.cidade = cidade;
+        this.enderecoPrincipal = enderecoPrincipal;
         this.clientes = clientes;
     }
 
@@ -111,6 +119,14 @@ public class Enderecos {
         this.cidade = cidade;
     }
 
+    public String getEnderecoPrincipal() {
+        return enderecoPrincipal;
+    }
+
+    public void setEnderecoPrincipal(String enderecoPrincipal) {
+        this.enderecoPrincipal = enderecoPrincipal;
+    }
+
     public Clientes getClientes() {
         return clientes;
     }
@@ -118,5 +134,4 @@ public class Enderecos {
     public void setClientes(Clientes clientes) {
         this.clientes = clientes;
     }
-
 }
