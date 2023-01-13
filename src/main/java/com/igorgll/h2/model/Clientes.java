@@ -1,11 +1,18 @@
 package com.igorgll.h2.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "tb_clientes")
@@ -16,40 +23,26 @@ public class Clientes {
     @Column(name = "id")
     private Long id;
 
+    @NotEmpty(message = "Nome é obrigatório")
     @Column(name = "nome")
     private String nome;
 
+    @NotEmpty(message = "Data de nascimento é obrigatório")
     @Column(name = "nascimento")
     private String dataNascimento;
 
-    @Column(name = "endereco")
-    private String endereco;
-
-    @Column(name = "logradouro")
-    private String logradouro;
-
-    @Column(name = "cep")
-    private String cep;
-
-    @Column(name = "numero")
-    private String numero;
-
-    @Column(name = "cidade")
-    private String cidade;
+    @OneToMany(mappedBy = "clientes", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({ "clientes" })
+    private List<Enderecos> enderecos;
 
     public Clientes() {
     }
 
-    public Clientes(Long id, String nome, String dataNascimento, String endereco, String logradouro, String cep,
-            String numero, String cidade) {
+    public Clientes(Long id, @NotEmpty(message = "Nome é obrigatório") String nome,
+            @NotEmpty(message = "Data de nascimento é obrigatório") String dataNascimento) {
         this.id = id;
         this.nome = nome;
         this.dataNascimento = dataNascimento;
-        this.endereco = endereco;
-        this.logradouro = logradouro;
-        this.cep = cep;
-        this.numero = numero;
-        this.cidade = cidade;
     }
 
     public Long getId() {
@@ -76,44 +69,11 @@ public class Clientes {
         this.dataNascimento = dataNascimento;
     }
 
-    public String getEndereco() {
-        return endereco;
+    public List<Enderecos> getEnderecos() {
+        return enderecos;
     }
 
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
+    public void setEnderecos(List<Enderecos> enderecos) {
+        this.enderecos = enderecos;
     }
-
-    public String getLogradouro() {
-        return logradouro;
-    }
-
-    public void setLogradouro(String logradouro) {
-        this.logradouro = logradouro;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    };
-
 }

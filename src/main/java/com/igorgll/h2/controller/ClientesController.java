@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,8 +22,11 @@ import com.igorgll.h2.model.Clientes;
 import com.igorgll.h2.repository.ClientesRepository;
 import com.igorgll.h2.service.ClientesService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("api/v1/clientes")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ClientesController {
 
     private @Autowired ClientesRepository clientesRepository;
@@ -31,11 +35,10 @@ public class ClientesController {
     @GetMapping
     public ResponseEntity<List<Clientes>> getClientes() {
         List<Clientes> list = clientesRepository.findAll();
-        if (list.isEmpty()) { // if the list of clients is empty returns "(204) No content", otherwise it returns "(200) OK"
+        if (list.isEmpty()) {
             return ResponseEntity.status(204).build();
-        } else {
-            return ResponseEntity.status(200).body(list);
         }
+        return ResponseEntity.status(200).body(list);
     }
 
     @GetMapping("/{id}")
@@ -47,23 +50,23 @@ public class ClientesController {
     }
 
     @PostMapping
-    public ResponseEntity<Clientes> createCliente(@RequestBody Clientes clientes) {
+    public ResponseEntity<Clientes> createCliente(@Valid @RequestBody Clientes clientes) {
         return clientesService.createClientes(clientes).map(resp -> ResponseEntity.status(201).body(resp))
                 .orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Clientes> updateCliente(@PathVariable long id, @RequestBody Clientes clientes) {
+    public ResponseEntity<Clientes> updateCliente(@PathVariable long id, @Valid @RequestBody Clientes clientes) {
         Clientes updateCliente = clientesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente com o id: " + id + " não existe."));
 
         updateCliente.setNome(clientes.getNome());
         updateCliente.setDataNascimento(clientes.getDataNascimento());
-        updateCliente.setEndereco(clientes.getEndereco());
-        updateCliente.setLogradouro(clientes.getLogradouro());
-        updateCliente.setCep(clientes.getCep());
-        updateCliente.setNumero(clientes.getNumero());
-        updateCliente.setCidade(clientes.getCidade());
+
+        // if (updateCliente.getNome().isEmpty() ||
+        // updateCliente.getDataNascimento().isEmpty()) {
+        // return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        // }
 
         clientesRepository.save(updateCliente);
 
