@@ -6,7 +6,7 @@
 
 - [x] Editar cliente na base de dados
 
-- [ ] Listar endereços de cliente e mostrar qual endereço é o principal
+- [x] Listar endereços de cliente e mostrar qual endereço é o principal
 
 - [ ] Testes usando JUnit
 

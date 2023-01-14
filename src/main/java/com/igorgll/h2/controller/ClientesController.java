@@ -60,7 +60,7 @@ public class ClientesController {
         Clientes updateCliente = clientesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente com o id: " + id + " não existe."));
 
-        updateCliente.setNome(clientes.getNome());
+        updateCliente.setNome(clientes.getNome()); // jogar pra service
         updateCliente.setDataNascimento(clientes.getDataNascimento());
 
         clientesRepository.save(updateCliente);

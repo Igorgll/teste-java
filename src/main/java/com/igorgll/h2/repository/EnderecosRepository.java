@@ -6,6 +6,4 @@ import org.springframework.stereotype.Repository;
 import com.igorgll.h2.model.Enderecos;
 
 @Repository
-public interface EnderecosRepository extends JpaRepository<Enderecos, Long> {
-
-}
+public interface EnderecosRepository extends JpaRepository<Enderecos, Long> {}

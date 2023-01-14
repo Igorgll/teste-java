@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.igorgll.h2.exception.ResourceNotFoundException;
 import com.igorgll.h2.model.Enderecos;
 import com.igorgll.h2.repository.EnderecosRepository;
+import com.igorgll.h2.service.EnderecosService;
 
 import jakarta.validation.Valid;
 
@@ -28,6 +29,7 @@ import jakarta.validation.Valid;
 public class EnderecosController {
 
     private @Autowired EnderecosRepository enderecosRepository;
+    private @Autowired EnderecosService enderecosService;
 
     @GetMapping("/{id}")
     public ResponseEntity<Enderecos> getById(@PathVariable Long id) {
@@ -37,8 +39,10 @@ public class EnderecosController {
         return ResponseEntity.ok().body(enderecos);
     }
 
-    @PostMapping
-    public ResponseEntity<Enderecos> createEndereco(@Valid @RequestBody Enderecos enderecos) {
+    @PostMapping("{id_cliente}")
+    public ResponseEntity<Enderecos> createEndereco(@Valid @RequestBody Enderecos enderecos,
+            @PathVariable Long id_cliente) {
+        enderecos = enderecosService.createNewEndereco(enderecos, id_cliente);
         return ResponseEntity.status(HttpStatus.CREATED).body(enderecosRepository.save(enderecos));
     }
 
@@ -47,7 +51,7 @@ public class EnderecosController {
         Enderecos updateEndereco = enderecosRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Endereco com o id: " + id + " não existe."));
 
-        updateEndereco.setEndereco(enderecos.getEndereco());
+        updateEndereco.setEndereco(enderecos.getEndereco()); // jogar pra service
         updateEndereco.setLogradouro(enderecos.getLogradouro());
         updateEndereco.setCep(enderecos.getCep());
         updateEndereco.setNumero(enderecos.getNumero());
