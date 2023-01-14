@@ -8,7 +8,6 @@
 
 - [x] Listar endereços de cliente e mostrar qual endereço é o principal
 
+- [x] Clean Code
+
 - [ ] Testes usando JUnit
-
-- [ ] Clean Code
-

@@ -23,28 +23,28 @@ public class Enderecos {
     private Long id;
 
     @NotEmpty(message = "Endereço é obrigatório")
-    @Column(name = "Endereço")
+    @Column(name = "endereco")
     private String endereco;
 
     @NotEmpty(message = "Logradouro é obrigatório")
-    @Column(name = "Logradouro")
+    @Column(name = "logradouro")
     private String logradouro;
 
     @NotEmpty(message = "CEP é obrigatório")
-    @Column(name = "CEP")
+    @Column(name = "cep")
     private String cep;
 
     @NotEmpty(message = "Número é obrigatório")
-    @Column(name = "Número")
+    @Column(name = "numero")
     private String numero;
 
     @NotEmpty(message = "Cidade é obrigatório")
-    @Column(name = "Cidade")
+    @Column(name = "cidade")
     private String cidade;
 
     @NotEmpty(message = "Endereço principal é obrigatório")
     @Size(min = 3, max = 3)
-    @Column(name = "Endereço_principal")
+    @Column(name = "endereco_principal")
     private String enderecoPrincipal;
 
     @ManyToOne
