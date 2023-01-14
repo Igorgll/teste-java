@@ -3,6 +3,7 @@ package com.igorgll.h2.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,19 +35,14 @@ public class ClientesController {
 
     @GetMapping
     public ResponseEntity<List<Clientes>> getClientes() {
-        List<Clientes> list = clientesRepository.findAll();
-        if (list.isEmpty()) {
-            return ResponseEntity.status(204).build();
-        }
+        List<Clientes> list = clientesService.findAllClientes();
         return ResponseEntity.status(200).body(list);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Clientes> getById(@PathVariable Long id) {
-        Clientes clientes = clientesRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente com o id: " + id + " não encontrado."));
-
-        return ResponseEntity.ok().body(clientes);
+    public ResponseEntity<Optional<Clientes>> getById(@PathVariable Long id) {
+        Optional<Clientes> cliente = clientesService.findClienteById(id);
+        return ResponseEntity.ok().body(cliente);
     }
 
     @PostMapping
@@ -56,14 +52,9 @@ public class ClientesController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Clientes> updateCliente(@PathVariable Long id, @Valid @RequestBody Clientes clientes) {
-        Clientes updateCliente = clientesRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente com o id: " + id + " não existe."));
-
-        updateCliente.setNome(clientes.getNome()); // jogar pra service
-        updateCliente.setDataNascimento(clientes.getDataNascimento());
-
-        clientesRepository.save(updateCliente);
+    public ResponseEntity<Optional<Clientes>> updateCliente(@PathVariable Long id,
+            @Valid @RequestBody Clientes clientes) {
+        Optional<Clientes> updateCliente = clientesService.updateCliente(clientes, id);
 
         return ResponseEntity.ok(updateCliente);
     }

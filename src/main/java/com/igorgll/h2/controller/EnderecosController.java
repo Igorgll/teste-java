@@ -2,6 +2,7 @@ package com.igorgll.h2.controller;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,11 +33,9 @@ public class EnderecosController {
     private @Autowired EnderecosService enderecosService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Enderecos> getById(@PathVariable Long id) {
-        Enderecos enderecos = enderecosRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Endereco com o id: " + id + " não encontrado."));
-
-        return ResponseEntity.ok().body(enderecos);
+    public ResponseEntity<Optional<Enderecos>> getById(@PathVariable Long id) {
+        Optional<Enderecos> endereco = enderecosService.findEnderecoById(id);
+        return ResponseEntity.ok().body(endereco);
     }
 
     @PostMapping("{id_cliente}")
@@ -47,18 +46,9 @@ public class EnderecosController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Enderecos> updateEndereco(@PathVariable Long id, @Valid @RequestBody Enderecos enderecos) {
-        Enderecos updateEndereco = enderecosRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Endereco com o id: " + id + " não existe."));
-
-        updateEndereco.setEndereco(enderecos.getEndereco()); // jogar pra service
-        updateEndereco.setLogradouro(enderecos.getLogradouro());
-        updateEndereco.setCep(enderecos.getCep());
-        updateEndereco.setNumero(enderecos.getNumero());
-        updateEndereco.setCidade(enderecos.getCidade());
-        updateEndereco.setEnderecoPrincipal(enderecos.getEnderecoPrincipal());
-
-        enderecosRepository.save(updateEndereco);
+    public ResponseEntity<Optional<Enderecos>> updateEndereco(@PathVariable Long id,
+            @Valid @RequestBody Enderecos enderecos) {
+        Optional<Enderecos> updateEndereco = enderecosService.updateEndereco(enderecos, id);
 
         return ResponseEntity.ok(updateEndereco);
     }
