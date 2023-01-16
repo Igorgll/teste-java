@@ -1,13 +1,21 @@
-- [x] Buscar lista de clientes na base de dados.
+## 💻 Projeto
 
-- [x] Criar cliente na base de dados.
+API Rest SpringBoot e banco de dados H2
 
-- [x] Consultar cliente na base de dados por id
+## 🚀 Tecnologias
 
-- [x] Editar cliente na base de dados
+- JAVA
+- SpringBoot
+- H2 Database
+- JUnit
 
-- [x] Listar endereços de cliente e mostrar qual endereço é o principal
+## 👨‍💻 Api Endpoints
+- Buscar lista de clientes na base de dados GET: `http://localhost:8080/api/v1/clientes`.
 
-- [x] Clean Code
+- Criar cliente na base de dados POST: `http://localhost:8080/api/v1/clientes`.
 
-- [ ] Testes usando JUnit
+- Consultar cliente na base de dados por id GET: `http://localhost:8080/api/v1/clientes/{id}`.
+
+- Editar cliente na base de dados PUT: `http://localhost:8080/api/v1/clientes/{id}`.
+
+- Excluir cliente na base de dados DELETE: `http://localhost:8080/api/v1/clientes/{id}`.
