@@ -30,24 +30,21 @@ public class ClientesControllerTest {
     private @Autowired ClientesService clientesService;
     private @Autowired ClientesRepository clientesRepository;
 
-    private Clientes cliente;
-    private Clientes updateCliente;
+    private Clientes createCliente;
 
     @BeforeAll
     void start() {
         clientesRepository.deleteAll();
 
-        cliente = new Clientes(0L, "Igor Lima", "10/09/2000");
-        updateCliente = new Clientes(1L, "Igor Lima Modificado", "10/09/2000");
+        createCliente = new Clientes(0L, "Igor Lima", "10/09/2000");
     }
 
     @Test
     @Order(1)
-    public void deveCriarCliente() {
+    public void deveCriarClienteRetorna201() {
 
         // GIVEN
-        HttpEntity<Clientes> requisicao = new HttpEntity<Clientes>(
-                new Clientes(0l, "Jorge Santos", "12/08/1990"));
+        HttpEntity<Clientes> requisicao = new HttpEntity<Clientes>(createCliente);
 
         // WHEN
         ResponseEntity<Clientes> resposta = testRestTemplate
@@ -59,7 +56,7 @@ public class ClientesControllerTest {
 
     @Test
     @Order(2)
-    public void naoDeveDuplicarCliente() {
+    public void naoDeveDuplicarClienteRetorna400() {
         clientesService.createClientes(new Clientes(0L, "Maria Santos", "21/05/2005"));
 
         // GIVEN
@@ -73,5 +70,4 @@ public class ClientesControllerTest {
         // THEN
         assertEquals(HttpStatus.BAD_REQUEST, resposta.getStatusCode());
     }
-
 }
