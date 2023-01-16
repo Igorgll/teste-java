@@ -2,6 +2,7 @@ package com.igorgll.h2.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -30,21 +31,17 @@ public class ClientesControllerTest {
     private @Autowired ClientesService clientesService;
     private @Autowired ClientesRepository clientesRepository;
 
-    private Clientes createCliente;
-
     @BeforeAll
     void start() {
-        clientesRepository.deleteAll();
-
-        createCliente = new Clientes(0L, "Igor Lima", "10/09/2000");
     }
 
     @Test
     @Order(1)
     public void deveCriarClienteRetorna201() {
+        clientesRepository.deleteAll();
 
         // GIVEN
-        HttpEntity<Clientes> requisicao = new HttpEntity<Clientes>(createCliente);
+        HttpEntity<Clientes> requisicao = new HttpEntity<Clientes>(new Clientes(0L, "Igor Lima", "10/09/2000"));
 
         // WHEN
         ResponseEntity<Clientes> resposta = testRestTemplate
@@ -57,6 +54,7 @@ public class ClientesControllerTest {
     @Test
     @Order(2)
     public void naoDeveDuplicarClienteRetorna400() {
+        clientesRepository.deleteAll();
         clientesService.createClientes(new Clientes(0L, "Maria Santos", "21/05/2005"));
 
         // GIVEN
@@ -69,5 +67,19 @@ public class ClientesControllerTest {
 
         // THEN
         assertEquals(HttpStatus.BAD_REQUEST, resposta.getStatusCode());
+    }
+
+    @Test
+    @Order(3)
+    public void buscaDeClientesRetorna200() {
+        ResponseEntity<String> resposta = testRestTemplate.exchange("/api/v1/clientes", HttpMethod.GET, null,
+                String.class);
+
+        assertEquals(HttpStatus.OK, resposta.getStatusCode());
+    }
+
+    @AfterAll
+    void end() {
+        System.out.println("TESTE FINALIZADO!");
     }
 }
